@@ -1,0 +1,5 @@
+{
+  "name": "AI Image Background Replacer",
+  "description": "An application that uses Gemini to replace the background of an image based on a text prompt, preserving the foreground subject.",
+  "requestFramePermissions": []
+}
