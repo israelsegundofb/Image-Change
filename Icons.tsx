@@ -13,10 +13,9 @@ export const UploadIcon: React.FC<IconProps> = ({ className }) => (
 
 export const SparklesIcon: React.FC<IconProps> = ({ className }) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="m9.813 15.904 1.72-4.738a.5.5 0 0 1 .934 0l1.72 4.738a1 1 0 0 0 .61.61l4.738 1.72a.5.5 0 0 1 0 .934l-4.738 1.72a1 1 0 0 0-.61.61l-1.72 4.738a.5.5 0 0 1-.934 0l-1.72-4.738a1 1 0 0 0-.61-.61l-4.738-1.72a.5.5 0 0 1 0-.934l4.738-1.72a1 1 0 0 0 .61-.61ZM12 2.25V4.5m5.303.197-1.591 1.591M21 12h-2.25m-.197 5.303-1.591-1.591M12 21v-2.25m-5.303-.197 1.591-1.591M3 12h2.25m.197-5.303 1.591 1.591" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 1.72-4.738a.5.5 0 0 1 .934 0l1.72 4.738a1 1 0 0 0 .61.61l4.738 1.72a.5.5 0 0 1 0 .934l-4.738 1.72a1 1 0 0 0-.61.61l-1.72 4.738a.5.5 0 0 1-.934 0l-1.72-4.738a1 1 0 0 0-.61-.61l-4.738-1.72a.5.5 0 0 1 0-.934l4.738-1.72a1 1 0 0 0 .61-.61ZM12 2.25V4.5m5.303.197-1.591 1.591M21 12h-2.25m-.197 5.303-1.591-1.591M12 21v-2.25m-5.303-.197 1.591-1.591M3 12h2.25m.197-5.303 1.591 1.591" />
     </svg>
 );
-
 
 export const AlertTriangleIcon: React.FC<IconProps> = ({ className }) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
@@ -62,8 +61,7 @@ export const RefreshIcon: React.FC<IconProps> = ({ className }) => (
 
 export const TypeIcon: React.FC<IconProps> = ({ className }) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.659A2.25 2.25 0 0 0 9.568 3Z" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M6 6h.008v.008H6V6Z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 8.25V6a2.25 2.25 0 0 1 2.25-2.25h9a2.25 2.25 0 0 1 2.25 2.25v2.25M12 3.75v16.5M9.75 20.25h4.5" />
     </svg>
 );
 

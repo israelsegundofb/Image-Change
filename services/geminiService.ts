@@ -11,15 +11,13 @@ export async function editImageWithPrompt(
   quality: QualityLevel = 'low',
   aspectRatio: AspectRatio = '1:1'
 ): Promise<string> {
-  try {
-    // Re-initialize to ensure it picks up the latest key from process.env.API_KEY
-    // which is updated if the user selects a key via the AI Studio dialog
-    const API_KEY = process.env.API_KEY;
-    if (!API_KEY) {
-      throw new Error("No API key available.");
-    }
-    const ai = new GoogleGenAI({ apiKey: API_KEY });
+  const API_KEY = process.env.API_KEY;
+  if (!API_KEY) {
+    throw new Error("Missing API Key. Check your environment configuration.");
+  }
 
+  try {
+    // Model selection based on user quality preference
     let modelName = 'gemini-2.5-flash-image';
     let imageSize: '1K' | '2K' | '4K' | undefined = undefined;
 
@@ -32,12 +30,15 @@ export async function editImageWithPrompt(
     }
 
     const config: any = {};
-    if (modelName === 'gemini-3-pro-image-preview') {
+    if (modelName.includes('gemini-3') || modelName.includes('gemini-2.5')) {
       config.imageConfig = {
         aspectRatio: aspectRatio,
-        imageSize: imageSize
+        ...(imageSize ? { imageSize } : {})
       };
     }
+
+    // Always create a new instance right before making an API call
+    const ai = new GoogleGenAI({ apiKey: API_KEY });
 
     const response = await ai.models.generateContent({
       model: modelName,
@@ -58,22 +59,69 @@ export async function editImageWithPrompt(
     });
 
     const candidate = response.candidates?.[0];
-    if (!candidate || !candidate.content || !candidate.content.parts) {
-       throw new Error('Malformed response from Gemini API.');
+    if (!candidate?.content?.parts) {
+       throw new Error('API returned an empty result. Try a different prompt.');
     }
 
+    // Iterate through all response parts to find the image part (standard for nano banana series)
     for (const part of candidate.content.parts) {
-      if (part.inlineData) {
+      if (part.inlineData?.data) {
         return part.inlineData.data;
       }
     }
 
-    throw new Error('No image was returned in the response parts.');
+    throw new Error('No image was found in the model response.');
   } catch (error: any) {
-    console.error("Error calling Gemini API:", error);
-    if (error instanceof Error) {
-        throw error;
+    console.error("Gemini Service Error:", error);
+    
+    const message = error?.message || "";
+    if (message.includes('safety')) {
+      throw new Error("Generation blocked by safety filters. Please try a more descriptive or professional prompt.");
     }
-    throw new Error("An unexpected error occurred while communicating with the Gemini API.");
+    if (message.includes('Requested entity was not found')) {
+       throw new Error("Model or project access denied. Please ensure your project has billing enabled and you have selected a valid project API key.");
+    }
+    
+    if (error instanceof Error) throw error;
+    throw new Error("Generation failed due to a network or server communication error.");
   }
+}
+
+export async function removeBackground(
+  base64ImageData: string, 
+  mimeType: string
+): Promise<string> {
+  const API_KEY = process.env.API_KEY;
+  if (!API_KEY) throw new Error("Missing API Key.");
+
+  const ai = new GoogleGenAI({ apiKey: API_KEY });
+  
+  // Use gemini-2.5-flash-image for efficient background removal tasks
+  const response = await ai.models.generateContent({
+    model: 'gemini-2.5-flash-image',
+    contents: {
+      parts: [
+        {
+          inlineData: {
+            data: base64ImageData,
+            mimeType: mimeType,
+          },
+        },
+        {
+          text: "Remove the background of this image. Return ONLY the subject in a high-quality PNG format with complete transparency in place of the background.",
+        },
+      ],
+    },
+  });
+
+  const candidate = response.candidates?.[0];
+  if (!candidate?.content?.parts) throw new Error('Failed to process background removal.');
+
+  for (const part of candidate.content.parts) {
+    if (part.inlineData?.data) {
+      return part.inlineData.data;
+    }
+  }
+
+  throw new Error('No transparency-enabled image data was returned.');
 }
